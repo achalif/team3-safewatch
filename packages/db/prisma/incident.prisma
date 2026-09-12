@@ -1,0 +1,86 @@
+//Restricts incident statuses
+enum IncidentStatus {
+  ACTIVE
+  INVESTIGATING
+  RESOLVED
+  CANCELLED
+  EXPIRED //For soft-deleting stale or time-sensitive alerts
+}
+
+//Restricts incident severity
+enum IncidentSeverity {
+  LOW //Low-risk incidents such as passive notices
+  MEDIUM //Exercise caution, stay aware of surroundings
+  HIGH // Urgent threat, immediate caution
+  CRITICAL //Life threatening emergency
+}
+
+//Restricts incident categories
+enum IncidentCategory {
+  CRIME
+  FIRE
+  MEDICAL
+  SEVERE_WEATHER
+  TRAFFIC_HAZARD
+  CIVIL_UNREST
+  OTHER //For unlisted emergency types
+  UNCATEGORIZED //Default
+}
+
+//Incident Model: Main emergency event displayed on live map feeds
+// - Manages map pin placement (lat/lng/address)
+// - Handles CAD feed deduplication via externalId
+// - Controls pin auto-expiry using ttlExpiresAt
+model Incident {
+    id String @id @default(cuid(2)) //Incident id
+    
+    //Feed ingestion and deduplication keys
+    externalId String? @unique //Stores CAD event ID to prevent duplicate records
+    source String? //"NYC_LIVE_CAD", "CITIZEN_API", etc.
+
+   
+    
+    title String
+    
+    //Relational Mapping
+    category IncidentCategory @default(UNCATEGORIZED)
+    description String? @db.Text //Allows table column to store unlimited text size without crashing
+    status IncidentStatus @default(ACTIVE) //Auto-populates live-incidents on map
+    severity IncidentSeverity //Requires an insert from ingest parser
+    
+    //Spatial coordinates for map rendering
+    longitude Float
+    latitude Float
+    address String? //Reverse-geocoding service converts raw GPS coordinates into human-readable address
+
+    //Timestamps and lifecycle management
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    resolvedAt DateTime?
+    verifiedAt DateTime? //Timestamp for when public service agency verified event
+    ttlExpiresAt DateTime? //Database auto-purges or hides old active markers
+
+    //Virtual relation: links an incident to its historical updates timeline
+    updates IncidentUpdate[]
+
+    //Spatial index: creates spatial lookup map for incident coordinates to optimize db lookup
+    @@index([latitude, longitude])
+    @@index([status, createdAt]) //Pre-sorted index: ensures most recent/active incidents are displayed first
+}
+
+//Incident Update Model: Timeline log
+// -Stores sequential dispatcher updates without overriding initial event database
+// -Links to parent Incident via incidentId foreign key
+model IncidentUpdate {
+    id String @id @default(cuid(2))
+
+    incidentId String //Foreign key, stores copied id string to link tables
+    incident Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+    //Timeline payload
+    message String @db.Text //The note/update from the feed or dispatcher
+    createdAt DateTime @default(now()) //Timestamp for when specific update occurred
+
+    //Pre-sorts each incident's updates by creation time
+    @@index([incidentId, createdAt])
+}
