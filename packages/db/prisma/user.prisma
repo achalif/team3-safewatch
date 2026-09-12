@@ -4,11 +4,27 @@ model User {
     id String @id @default(cuid(2)) //Generates User ID
     email String @unique
     phoneNumber String @unique
-    createdAt DateTime @default(now())
-    profile Profile? //Tells Prisma how to fetch a user's Profile in queries
+    role Role @default(USER)
 
-    //Relation Link: Tracks incidents that are logged for this user
-    incidents Incident[]
+    password String //Stores hashed password
+    
+    //Virtually links a user to their corresponding profile (so it can be queried via TypeScript)
+    profile Profile?
+
+    
+    emergencyContacts EmergencyContact[] //User's emergency contacts
+    alertsTriggered AlertLog[] //History of panic alerts fired by the user
+
+
+    //Timestamps
+    createdAt DateTime @default(now)
+    updatedAt DateTime @updatedAt
+
+    //Verification flags
+    isEmailVerified Boolean @default(false)
+    isPhoneVerified Boolean @default(false)
+
+
 }
 
 model Profile {
@@ -16,9 +32,28 @@ model Profile {
     firstName String?
     lastName String?
 
-    //Foreign key, stores copied id string to link tables
-    userId String @unique
+    //Dynamic GPS coordinates
+    latitude Float?
+    longitude Float?
+    lastLocationUpdate DateTime?
+
+    //GPS hardware control flags
+    status UserStatus @default(OFFLINE)
+    isActiveTracking Boolean @default(false)
+
+    //Hardware and Notification State
+    batteryLevel Int?
+    pushToken String? //Push token for instant mobile alerts (for incidents)
+
+    //Timestamp
+    updatedAt Datetime @updatedAt
+
+    userId String @unique //Foreign key, stores copied id string to link tables
     
     //Relational mapping: Links the Profile table's userId to the User table's id
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)  
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    //Spatial index: Ensures the database only retrieves incidents within the range
+    //of the user profile's longitude and latitude
+    @@index([latitude, longitude])
 }

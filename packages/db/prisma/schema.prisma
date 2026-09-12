@@ -1,5 +1,27 @@
-// The data model for the entire app. Boilerplate — empty schema with no models.
-// Example branches add their own models, enums, and migrations here.
+//Global Configuration & Connection
+
+//Restricts user permission levels
+enum Role {
+  USER
+  ADMIN
+}
+
+//Restricts active tracking status
+enum UserStatus {
+  ONLINE //App is open, low-power location updates
+  OFFLINE //User is not using the app
+  IN_TRANSIT //"Walk home" mode active, regular high-precision GPS updates
+  EMERGENCY //Panic triggered, highest-frequency GPS stream + contact alerts
+}
+
+//Restricts emergency contact categories
+enum EmergencyContact {
+  PARENT
+  SPOUSE
+  SIBLING
+  FRIEND
+  OTHER
+}
 
 generator client {
   provider        = "prisma-client-js"
