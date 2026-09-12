@@ -15,7 +15,7 @@ enum UserStatus {
 //User and Profile Data Models
 
 model User {
-    id String @id @default(cuid(2)) //Generates User ID
+    id String @id @default(cuid()) //Generates User ID
     email String @unique
     phoneNumber String @unique
     role Role @default(USER)
@@ -27,11 +27,12 @@ model User {
 
     
     emergencyContacts EmergencyContact[] //User's emergency contacts
-    alertsTriggered AlertLog[] //History of panic alerts fired by the user
+    //Placeholder for alertsTriggered AlertLog[], history of panic alerts fired by user
+
 
 
     //Timestamps
-    createdAt DateTime @default(now) //Automatically records the date/time a record was first created
+    createdAt DateTime @default(now()) //Automatically records the date/time a record was first created
     updatedAt DateTime @updatedAt //Updates current date everytime a specific record is modified
 
     //Verification flags
@@ -42,7 +43,7 @@ model User {
 }
 
 model Profile {
-    id String @id @default(cuid(2)) //Generates Profile ID
+    id String @id @default(cuid()) //Generates Profile ID
     firstName String?
     lastName String?
 
@@ -60,7 +61,7 @@ model Profile {
     pushToken String? //Push token for instant mobile alerts (for incidents)
 
     //Timestamp
-    updatedAt Datetime @updatedAt
+    updatedAt DateTime @updatedAt
 
     userId String @unique //Foreign key, stores copied id string to link tables
     

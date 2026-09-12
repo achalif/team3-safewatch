@@ -32,7 +32,7 @@ enum IncidentCategory {
 // - Handles CAD feed deduplication via externalId
 // - Controls pin auto-expiry using ttlExpiresAt
 model Incident {
-    id String @id @default(cuid(2)) //Incident id
+    id String @id @default(cuid()) //Incident id
     
     //Feed ingestion and deduplication keys
     externalId String? @unique //Stores CAD event ID to prevent duplicate records
@@ -72,7 +72,7 @@ model Incident {
 // -Stores sequential dispatcher updates without overriding initial event database
 // -Links to parent Incident via incidentId foreign key
 model IncidentUpdate {
-    id String @id @default(cuid(2))
+    id String @id @default(cuid())
 
     incidentId String //Foreign key, stores copied id string to link tables
     incident Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)

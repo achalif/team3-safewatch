@@ -1,10 +1,9 @@
 //Global Configuration & Connection
-
 generator client {
   provider        = "prisma-client-js"
   engineType      = "library"
   previewFeatures = ["driverAdapters"]
-  output          = "../src/generated/prisma"
+  output          = "../../src/generated/prisma"
 }
 
 datasource db {
@@ -12,11 +11,3 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//Restricts emergency contact categories
-enum EmergencyContact {
-  PARENT
-  SPOUSE
-  SIBLING
-  FRIEND
-  OTHER
-}

@@ -1,0 +1,30 @@
+//Restricts emergency contact categories
+enum Relationship {
+  PARENT
+  SPOUSE
+  SIBLING
+  FRIEND
+  OTHER
+}
+
+model EmergencyContact {
+    id String @id @default(cuid()) //emergency contact record id
+    firstName String
+    lastName String
+    phoneNumber String
+    email String? //Optional for notifications
+    relationship Relationship?
+
+    //Status and dispatch tracking
+    notified Boolean @default(false)
+    isPrimary Boolean @default(false) //Top contact for immediate alert dispatch
+    
+    userId String //Foreign key, stores copy of id from User table
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    //Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt //Updates current date everytime record is modified 
+
+    @@index([userId]) //Maps all emergency contact records to their corresponding userId
+}

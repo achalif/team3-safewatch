@@ -11,6 +11,7 @@
   },
   "scripts": {
     "generate": "prisma generate",
+    "validate": "prisma validate",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf src/generated"
   },
