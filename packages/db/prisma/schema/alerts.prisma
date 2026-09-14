@@ -1,0 +1,87 @@
+//Describes hazard level
+enum AlertSeverity {
+    EMERGENCY
+    CRITICAL
+    WARNING
+    INFO
+
+}
+
+//Tracks the status on an alert
+enum AlertLifecycleStatus {
+    ACTIVE
+    RESOLVED
+    EXPIRED
+    CANCELLED
+}
+
+enum DeliveryStatus {
+    PENDING
+    SENT
+    DELIVERED
+    FAILED
+}
+
+enum DeliveryChannel {
+    PUSH //Push notifications
+    SMS //Text notifications
+    IN_APP //While using app
+}
+
+enum TargetAudience {
+    ALL_USERS //System-wide alert (e.g severe weather broadcasts)
+    GEOFENCED_ZONE //Users located within a specific GPS radius of an incident
+    EMERGENCY_CONTACTS //Triggered via SOS button to notify a user's personal list
+}
+
+//Acts as the data source for user-facing alert components
+model Alert {
+    id String @id @default(cuid())
+    title String //Title of alert
+    body String  @db.Text //Body of alert
+
+    status AlertLifecycleStatus @default(ACTIVE)
+    severity AlertSeverity @default(WARNING)
+
+    audience TargetAudience @default(GEOFENCED_ZONE) //Target audience
+
+    // Placeholder: Virtually maps Alert table to AlertLog table (1:N relationship)
+    logs AlertLog[]
+
+    
+    incidentId String? //Connects feed alerts to a specific live safety incident (1 Incident: Many Alerts)
+    incident Incident? @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+//Tracks the individual delivery status and lifecycle for a specific user
+model AlertLog {
+    id String @id @default(cuid()) //Alert Log id
+
+    //Parent Alert Relation
+    alertId String //Connects a log record to its parent Alert (1 Alert: Many Alert Logs)
+    alert Alert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+
+    //Target recipient Relations (App user or SOS contact(s))
+    userId String?
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    emergencyContactId String?
+    emergencyContact EmergencyContact? @relation(fields: [emergencyContactId], references: [id], onDelete: Cascade)
+
+    //Status and Channel Tracking
+    status DeliveryStatus @default(PENDING)
+    channel DeliveryChannel @default(PUSH)
+    failureReason String? //Useful for debugging SMS/PUSH notifications that failed to send
+    
+    //Timestamps
+    sentAt DateTime @default(now())
+    receivedAt DateTime?
+    readAt DateTime?
+
+    @@index([userId, readAt]) //
+    @@index([alertId]) //Fast lookup of all logs for a given alert
+    @@index([emergencyContactId]) //Fast lookup of all delivery logs for a specific emergency contact
+}
