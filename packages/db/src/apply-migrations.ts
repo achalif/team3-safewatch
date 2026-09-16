@@ -21,28 +21,50 @@ export async function applyMigrations(sql: Sql, info = (msg: string) => {}) {
     )
   `);
 
-  const { readdir } = await import("node:fs/promises");
-  let files: string[];
+  const { readdir, readFile } = await import("node:fs/promises");
+  let entries: { name: string; isDirectory: () => boolean; isFile: () => boolean }[];
   try {
-    files = await readdir(MIGRATIONS_DIR);
+    entries = await readdir(MIGRATIONS_DIR, { withFileTypes: true });
   } catch {
     info("no migrations directory — skipping");
     return;
   }
 
-  const sorted = files.filter((f) => f.endsWith(".sql")).sort();
+  const migrationPaths: { path: string; name: string }[] = [];
+
+  for (const entry of entries) {
+    const entryPath = join(MIGRATIONS_DIR, entry.name);
+
+    if (entry.isDirectory()) {
+      const migrationSqlPath = join(entryPath, "migration.sql");
+      try {
+        await readFile(migrationSqlPath, "utf-8");
+        migrationPaths.push({ path: migrationSqlPath, name: entry.name });
+      } catch {
+        // Directory is not a Prisma migration folder; skip it.
+      }
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith(".sql")) {
+      migrationPaths.push({ path: entryPath, name: entry.name });
+    }
+  }
+
+  migrationPaths.sort((a, b) => a.name.localeCompare(b.name));
+
   const { rows } = await sql.query("SELECT name FROM _migrations ORDER BY name");
   const applied = new Set(rows.map((r: unknown) => (r as { name: string }).name));
 
-  for (const file of sorted) {
-    if (applied.has(file)) {
-      info(`migration ${file} already applied — skipping`);
+  for (const migration of migrationPaths) {
+    if (applied.has(migration.name)) {
+      info(`migration ${migration.name} already applied — skipping`);
       continue;
     }
-    const { readFile } = await import("node:fs/promises");
-    const migration = await readFile(join(MIGRATIONS_DIR, file), "utf-8");
-    await sql.exec(migration);
-    await sql.exec(`INSERT INTO _migrations (name) VALUES ('${file.replace(/'/g, "''")}')`);
-    info(`applied migration ${file}`);
+
+    const migrationSql = await readFile(migration.path, "utf-8");
+    await sql.exec(migrationSql);
+    await sql.exec(`INSERT INTO _migrations (name) VALUES ('${migration.name.replace(/'/g, "''")}')`);
+    info(`applied migration ${migration.name}`);
   }
 }

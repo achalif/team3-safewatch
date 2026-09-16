@@ -1,12 +1,12 @@
-import { prisma } from "@project/db";
+import { prisma, IncidentStatus, IncidentSeverity, IncidentCategory } from "@project/db";
 import { z } from "zod";
 
-export const incidentSeverityOrder = {
+export const incidentSeverityOrder: Record<IncidentSeverity, number> = {
   CRITICAL: 4,
   HIGH: 3,
   MEDIUM: 2,
   LOW: 1,
-} as const;
+};
 
 export const listActiveIncidentsSchema = z.object({
   limit: z.number().int().positive().max(50).optional(),
@@ -15,9 +15,9 @@ export const listActiveIncidentsSchema = z.object({
 export type IncidentListItem = {
   id: string;
   title: string;
-  status: string;
-  severity: string;
-  category: string;
+  status: IncidentStatus;
+  severity: IncidentSeverity;
+  category: IncidentCategory;
   address: string | null;
   createdAt: Date;
 };
@@ -29,7 +29,7 @@ export async function listActiveIncidents(
 
   const incidents = await prisma.incident.findMany({
     where: {
-      status: { in: ["ACTIVE", "INVESTIGATING"] },
+      status: { in: [IncidentStatus.ACTIVE, IncidentStatus.INVESTIGATING] },
     },
     select: {
       id: true,
@@ -40,22 +40,18 @@ export async function listActiveIncidents(
       address: true,
       createdAt: true,
     },
+    orderBy: { createdAt: "desc" },
+    take: 100,
   });
 
   return incidents
     .sort((a, b) => {
       const severityDelta =
-        (incidentSeverityOrder[b.severity as keyof typeof incidentSeverityOrder] ?? 0) -
-        (incidentSeverityOrder[a.severity as keyof typeof incidentSeverityOrder] ?? 0);
+        incidentSeverityOrder[b.severity] - incidentSeverityOrder[a.severity];
 
       if (severityDelta !== 0) return severityDelta;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+
+      return b.createdAt.getTime() - a.createdAt.getTime();
     })
-    .slice(0, limit)
-    .map((incident) => ({
-      ...incident,
-      status: incident.status,
-      severity: incident.severity,
-      category: incident.category,
-    }));
+    .slice(0, limit);
 }
