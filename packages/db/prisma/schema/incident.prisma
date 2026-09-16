@@ -47,6 +47,8 @@ model Incident {
     description String? @db.Text //Allows table column to store unlimited text size without crashing
     status IncidentStatus @default(ACTIVE) //Auto-populates live-incidents on map
     severity IncidentSeverity //Requires an insert from ingest parser
+    alerts Alert[] //Back Relation: 1 Incident can receive many alerts
+    updates IncidentUpdate[] //Back Relation: 1 Incident can have many incident updates
     
     //Spatial coordinates for map rendering
     longitude Float
@@ -59,9 +61,6 @@ model Incident {
     resolvedAt DateTime?
     verifiedAt DateTime? //Timestamp for when public service agency verified event
     ttlExpiresAt DateTime? //Database auto-purges or hides old active markers
-
-    //Virtual relation: links an incident to its historical updates timeline
-    updates IncidentUpdate[]
 
     //Spatial index: creates spatial lookup map for incident coordinates to optimize db lookup
     @@index([latitude, longitude])

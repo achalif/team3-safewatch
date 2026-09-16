@@ -15,12 +15,13 @@ model EmergencyContact {
     email String? //Optional for notifications
     relationship Relationship?
 
-    //Status and dispatch tracking
-    notified Boolean @default(false)
     isPrimary Boolean @default(false) //Top contact for immediate alert dispatch
     
     userId String //Foreign key, stores copy of id from User table
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    //Back Relation: 1 Emergency Contact has many AlertLog delivery records
+    alertLogs AlertLog[]
 
     //Timestamps
     createdAt DateTime @default(now())

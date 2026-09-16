@@ -27,9 +27,7 @@ model User {
 
     
     emergencyContacts EmergencyContact[] //User's emergency contacts
-    //Placeholder for alertsTriggered AlertLog[], history of panic alerts fired by user
-
-
+    alertLogs AlertLog[] //History of panic alerts fired by user
 
     //Timestamps
     createdAt DateTime @default(now()) //Automatically records the date/time a record was first created

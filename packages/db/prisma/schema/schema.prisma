@@ -1,9 +1,8 @@
 //Global Configuration & Connection
 generator client {
-  provider        = "prisma-client-js"
-  engineType      = "library"
-  previewFeatures = ["driverAdapters"]
-  output          = "../../src/generated/prisma"
+  provider   = "prisma-client-js"
+  engineType = "library"
+  output     = "../../src/generated/prisma"
 }
 
 datasource db {
