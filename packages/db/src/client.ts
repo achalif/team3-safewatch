@@ -35,3 +35,5 @@ async function makeClient(): Promise<PrismaClient> {
 // client on every save. (Top-level await is fine in server modules.)
 export const prisma = globalThis.__prisma ?? (await makeClient());
 if (process.env.NODE_ENV !== "production") globalThis.__prisma = prisma;
+
+export * from "./generated/prisma";
