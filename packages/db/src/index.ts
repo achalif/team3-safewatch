@@ -7,4 +7,5 @@ export {
   IncidentStatus,
   IncidentSeverity,
   IncidentCategory,
+  Relationship,
 } from "./generated/prisma";

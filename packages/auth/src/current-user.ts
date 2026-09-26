@@ -11,6 +11,15 @@ export async function currentUserId(): Promise<string> {
       "Dev identity stub is disabled in production. (Week 8 replaces this with real auth.)"
     );
   }
-  const h = await headers();
-  return h.get("x-user-id") ?? process.env.DEV_USER_ID ?? FALLBACK;
+
+  try {
+    const h = await headers();
+    const idFromHeader = h.get("x-user-id");
+    if (idFromHeader) return idFromHeader;
+  } catch {
+    // Direct Node/test execution does not have a Next request context, so fall
+    // back to env vars or a default user instead of crashing the route.
+  }
+
+  return process.env.DEV_USER_ID ?? FALLBACK;
 }
