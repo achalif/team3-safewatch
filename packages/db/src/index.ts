@@ -9,6 +9,3 @@ export {
   IncidentCategory,
   Relationship,
 } from "./generated/prisma";
-
-export * from "./queries/incidents";
-export * from "./queries/user";

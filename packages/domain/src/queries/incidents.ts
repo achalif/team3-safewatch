@@ -1,5 +1,5 @@
-import { prisma, IncidentCategory, IncidentSeverity, IncidentStatus } from "../client";
-import { getIncidentIdsInRadius, getUserLocation, indexIncident } from "@project/redis";
+import { prisma, IncidentStatus } from "@project/db";
+import { getIncidentIdsInRadius, getUserLocation } from "@project/redis";
 
 // Alert radius used until profiles carry a per-user setting
 const DEFAULT_RADIUS_METERS = 5 * 1609.34;
@@ -10,7 +10,7 @@ const DEFAULT_RADIUS_METERS = 5 * 1609.34;
  * 
  * What this file does:
  * 
- * 1. getActiveIncidents()
+ * 1. getActiveIncidentPins()
  *      - Pulls every live incident currently parsed from the CAD feed.
  *      
  * 
@@ -20,13 +20,9 @@ const DEFAULT_RADIUS_METERS = 5 * 1609.34;
  * 
  * 3. getIncidentById()
  *      - Looks up one exact CAD incident by its ID.
- *      
- * 
- * 4. createIncident()
- *      - Persists new incident to PostgreSQL and indexes coordinates in Redis.
  */
 
-export async function getActiveIncidents() {
+export async function getActiveIncidentPins() {
     return prisma.incident.findMany({
         where : { status: { in: [IncidentStatus.ACTIVE,IncidentStatus.INVESTIGATING] } },
         select : {
@@ -80,23 +76,4 @@ export async function getIncidentById(id: string) {
         where : { id },
         include : { alerts : true },
     });
-}
-
-export async function createIncident(data : {
-    userId: string;
-    title: string;
-    category: IncidentCategory;
-    severity: IncidentSeverity;
-    longitude: number;
-    latitude: number;
-    address?: string;
-    description?: string;
-    externalId?: string;
-    source?: string;
-}) {
-    const incident = await prisma.incident.create({ data });
-
-    await indexIncident(incident.id, incident.latitude, incident.longitude);
-
-    return incident;
 }

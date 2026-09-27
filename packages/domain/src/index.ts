@@ -112,3 +112,6 @@ export async function createEmergencyContact(
     });
   });
 }
+
+export * from "./queries/incidents";
+export * from "./queries/user";

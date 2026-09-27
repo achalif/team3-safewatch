@@ -28,8 +28,7 @@
     "@electric-sql/pglite": "^0.5.4",
     "pglite-prisma-adapter": "0.6.1",
     "pg": "^8.13.0",
-    "@project/log": "workspace:*",
-    "@project/redis": "workspace:*"
+    "@project/log": "workspace:*"
   },
   "devDependencies": {
     "prisma": "6.19.3",

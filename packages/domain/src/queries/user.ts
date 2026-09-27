@@ -1,4 +1,4 @@
-import { prisma, Relationship } from "../client";
+import { prisma, Relationship } from "@project/db";
 /**
  * USER AND PROFILE QUERIES
  * 
