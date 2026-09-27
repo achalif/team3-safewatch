@@ -112,3 +112,6 @@ export async function createEmergencyContact(
     });
   });
 }
+
+export * from "./schemas/register-user";
+export * from "./queries/users";
