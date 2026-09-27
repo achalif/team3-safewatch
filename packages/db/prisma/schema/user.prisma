@@ -45,11 +45,6 @@ model Profile {
     firstName String?
     lastName String?
 
-    //Dynamic GPS coordinates
-    latitude Float?
-    longitude Float?
-    lastLocationUpdate DateTime?
-
     //GPS hardware control flags
     status UserStatus @default(OFFLINE)
     isActiveTracking Boolean @default(false)
@@ -66,7 +61,4 @@ model Profile {
     //Relational mapping: Links the Profile table's userId to the User table's id
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    //Spatial index: Ensures the database only retrieves incidents within the range
-    //of the user profile's longitude and latitude
-    @@index([latitude, longitude])
 }

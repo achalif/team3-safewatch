@@ -10,7 +10,7 @@ interface Sql {
   query(sql: string, params?: unknown[]): Promise<{ rows: unknown[] }>;
 }
 
-const MIGRATIONS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "prisma", "migrations");
+const MIGRATIONS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "prisma", "schema", "migrations");
 
 export async function applyMigrations(sql: Sql, info = (msg: string) => {}) {
   // Ensure migrations table exists.

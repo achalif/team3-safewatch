@@ -8,3 +8,6 @@ export {
   IncidentSeverity,
   IncidentCategory,
 } from "./generated/prisma";
+
+export * from "./queries/incidents";
+export * from "./queries/user";

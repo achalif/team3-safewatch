@@ -1,6 +1,7 @@
 // Dev identity stub: reads the current user from request headers, env var,
 // or a fallback. Deliberately naive — replaced with real auth in Week 8.
 
+import {NextResponse} from "next/server";
 import { headers } from "next/headers";
 
 const FALLBACK = "demo-user";

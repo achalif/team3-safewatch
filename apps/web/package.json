@@ -16,6 +16,7 @@
     "react-dom": "^19.0.0",
     "@prisma/client": "6.19.3",
     "@project/db": "workspace:*",
+    "@project/redis": "workspace:*",
     "@project/services": "workspace:*",
     "@project/domain": "workspace:*",
     "@project/auth": "workspace:*",
