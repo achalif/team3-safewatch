@@ -4,6 +4,11 @@ import {
   IncidentSeverity,
   IncidentCategory,
   Relationship,
+  AlertSeverity,
+  AlertLifecycleStatus,
+  TargetAudience,
+  DeliveryChannel,
+  DeliveryStatus,
 } from "@project/db";
 import { z } from "zod";
 
@@ -42,6 +47,26 @@ export const createEmergencyContactSchema = z.object({
   relationship: emergencyContactRelationshipSchema,
   isPrimary: z.boolean().default(false),
 });
+
+export const triggerSosAlertSchema = z.object({
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+  message: z
+    .string()
+    .trim()
+    .max(500)
+    .optional()
+    .transform((value) => (value ? value : undefined)),
+});
+
+// Thrown when the current user has no one to notify; the route maps it to 409.
+export class NoEmergencyContactsError extends Error {
+  readonly code = "NO_EMERGENCY_CONTACTS";
+
+  constructor() {
+    super("Add at least one emergency contact before triggering an SOS alert.");
+  }
+}
 
 export type IncidentListItem = {
   id: string;
@@ -108,6 +133,53 @@ export async function createEmergencyContact(
         relationship: input.relationship ?? null,
         isPrimary: input.isPrimary,
         userId,
+      },
+    });
+  });
+}
+
+export async function triggerSosAlert(
+  userId: string,
+  input: z.infer<typeof triggerSosAlertSchema>
+) {
+  return prisma.$transaction(async (tx) => {
+    const contacts = await tx.emergencyContact.findMany({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (contacts.length === 0) {
+      throw new NoEmergencyContactsError();
+    }
+
+    const coordinates = `${input.latitude}, ${input.longitude}`;
+    const body = [
+      `SOS triggered. Last known location: ${coordinates}`,
+      `https://maps.google.com/?q=${input.latitude},${input.longitude}`,
+      input.message,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    return tx.alert.create({
+      data: {
+        title: "SOS alert",
+        body,
+        status: AlertLifecycleStatus.ACTIVE,
+        severity: AlertSeverity.EMERGENCY,
+        audience: TargetAudience.EMERGENCY_CONTACTS,
+        logs: {
+          create: contacts.map((contact) => ({
+            emergencyContactId: contact.id,
+            channel: DeliveryChannel.SMS,
+            status: DeliveryStatus.PENDING,
+          })),
+        },
+      },
+      include: {
+        logs: {
+          select: { id: true, emergencyContactId: true, channel: true, status: true },
+        },
       },
     });
   });

@@ -22,7 +22,7 @@
 Roles rotate weekly so nobody becomes "the one who always…". The
 **stand-up lead** runs Tuesday's 15 minutes and posts the notes.
 The **review captain** is first responder on every PR opened that week
-(others can still review — the captain just guarantees nobody waits).**??**
+(others can still review — the captain just guarantees nobody waits).
 The **demo owner** keeps `main` deployable and runs the team's status
 share when it's our turn. Rotation is in the team channel's pinned
 message; whoever has it, has it — no swapping without a message.
