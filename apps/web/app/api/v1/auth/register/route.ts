@@ -1,5 +1,4 @@
 import { RegisterUser, createNewUser } from "@project/domain";
-import { Prisma } from "@prisma/client";
 
 export async function POST(req: Request) {
   let body: unknown;
