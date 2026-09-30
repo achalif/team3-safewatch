@@ -19,20 +19,24 @@
 
 ### Roles & responsibilities
 
-Roles rotate weekly so nobody becomes "the one who always…". The
-**stand-up lead** runs Tuesday's 15 minutes and posts the notes.
-The **review captain** is first responder on every PR opened that week
-(others can still review — the captain just guarantees nobody waits).
-The **demo owner** keeps `main` deployable and runs the team's status
-share when it's our turn. Rotation is in the team channel's pinned
-message; whoever has it, has it — no swapping without a message.
+We don't have set roles. Everyone does a bit of everything — frontend,
+backend, tests, docs, reviews — so nobody becomes "the one who always…"
+and everyone understands the whole codebase.
 
-Standing ownership (from the jigsaw): each member is the first stop for
-questions in their aspect above. First stop, not sole owner — anyone can
-change anything, but you ask the expert *before* you rewrite their layer.
+**Weekly tasks:** each week, every member claims one task by assigning
+themselves to an issue on the GitHub issues page. One issue per person per
+PR; if it isn't an issue, it isn't planned. Pick what you want to learn or
+what's unclaimed — if a task is stuck unclaimed, raise it at the meeting
+and we'll sort it out together.
 
-Everyone, every week: one homework PR merged, one review given, stand-up
-attended or an async update posted *before* it starts.
+**Reviews:** we review pull requests together, at the weekly meeting or
+after the weekly class. The author walks through the PR, and the team
+does the review as a group. Anyone can also leave review comments on
+GitHub before then.
+
+Everyone, every week: claim one issue, get its PR ready for review, take
+part in the group review, and attend the weekly meeting or post an async
+update *before* it starts.
 
 ## 2 · The Product
 
@@ -78,7 +82,7 @@ reviewed by someone who pulled and ran it, and it works at the preview URL
 | Team review (in class) | Every session, ~15 min of project time | One member's PR on the screen; the four moves (pull it, run it, read it, ask one real question). Comments filed as real review comments. |
 | Async check-in | Throughout the week | Slack channel |
 | Retro | Midterm (wk 7) + before demo day | The charter gets edited on the spot — that's the output. |
-| Planning | After Tuesday class, in Slack | Next week's PRs claimed in the channel by name, one issue each. If you can't name your PR on Sunday, that's the first thing to say at stand-up. |
+| Planning | After Tuesday class | Each member claims next week's issue on the GitHub issues page (assign yourself), one issue each. If you haven't claimed one by Sunday, that's the first thing to say at stand-up. |
 
 We use GitHub issues as our board: one issue per PR, assigned to one
 person, closed by the merge. If it isn't an issue, it isn't planned.
@@ -89,8 +93,8 @@ person, closed by the merge. If it isn't an issue, it isn't planned.
 review.*
 
 **Branch & PR flow:** `main` is protected. Branch from `main` as
-`yourname/short-thing`, open a PR early (draft is fine), request the review
-captain plus one. Squash-merge; the PR title is the commit message, so
+`yourname/short-thing`, open a PR early (draft is fine), and bring it to the
+group review at the weekly meeting or after class. Squash-merge; the PR title is the commit message, so
 write it like one.
 
 **What blocks approval:** the reviewer couldn't run it; a query that isn't
@@ -98,9 +102,10 @@ scoped by the current user; a migration that edits an earlier migration
 instead of adding a new one; AI-generated code the author can't explain
 when asked. Style never blocks — leave a `nit:` and approve.
 
-**Review response time:** first response within 24 hours on weekdays. If
-you can't review in time, say so in the PR so the captain reroutes it —
-silence is the only unacceptable answer.
+**Review response time:** PRs are reviewed together at the weekly meeting
+or after class. Any asynchronous review comment on GitHub gets a first
+response within 24 hours on weekdays. If you can't make the group review,
+say so in the PR or channel — silence is the only unacceptable answer.
 
 **Comment conventions:** `nit:` (take it or leave it) · `q:` (a real
 question — answer before merge) · `blocker:` (must change) · `praise:`
@@ -128,8 +133,8 @@ thread → still stuck at stand-up → TA → office hours.
 
 **If someone can't deliver on time:** say it in the channel the moment you
 know — a Tuesday "I'm not going to make it" is a plan; a Friday silence is
-a problem. The review captain redistributes; the missed PR moves to next
-week.
+a problem. The team redistributes or reassigns the issue at the next
+meeting; the missed PR moves to next week.
 
 ## 7 · Commitment
 
@@ -137,7 +142,7 @@ We'll revisit it at midterm and update what isn't working.
 
 | Signed | Date |
 |--------|------|
-|  | Sep 22, 2026 |
-|  | Sep 22, 2026 |
-|  | Sep 22, 2026 |
-|  | Sep 22, 2026 |
+| Alexander Chalif | Sep 30, 2026 |
+| Zihao Chen | Sep 30, 2026 |
+| Yewon Cho | Sep 30, 2026 |
+| Xiomara Estevez | Sep 30, 2026 |
