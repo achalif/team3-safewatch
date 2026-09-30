@@ -1,0 +1,64 @@
+//Restricts user permission levels
+enum Role {
+  USER
+  ADMIN
+}
+
+//Restricts active tracking status
+enum UserStatus {
+  ONLINE //App is open, low-power location updates
+  OFFLINE //User is not using the app
+  IN_TRANSIT //"Walk home" mode active, regular high-precision GPS updates
+  EMERGENCY //Panic triggered, highest-frequency GPS stream + contact alerts
+}
+
+//User and Profile Data Models
+
+model User {
+    id String @id @default(cuid()) //Generates User ID
+    email String @unique
+    phoneNumber String @unique
+    role Role @default(USER)
+
+    password String //Stores hashed password
+    
+    //Virtually links a user to their corresponding profile (so it can be queried via TypeScript)
+    profile Profile?
+
+    
+    emergencyContacts EmergencyContact[] //User's emergency contacts
+    alertLogs AlertLog[] //History of panic alerts fired by user
+
+    //Timestamps
+    createdAt DateTime @default(now()) //Automatically records the date/time a record was first created
+    updatedAt DateTime @updatedAt //Updates current date everytime a specific record is modified
+
+    //Verification flags
+    isEmailVerified Boolean @default(false)
+    isPhoneVerified Boolean @default(false)
+
+
+}
+
+model Profile {
+    id String @id @default(cuid()) //Generates Profile ID
+    firstName String?
+    lastName String?
+
+    //GPS hardware control flags
+    status UserStatus @default(OFFLINE)
+    isActiveTracking Boolean @default(false)
+
+    //Hardware and Notification State
+    batteryLevel Int?
+    pushToken String? //Push token for instant mobile alerts (for incidents)
+
+    //Timestamp
+    updatedAt DateTime @updatedAt
+
+    userId String @unique //Foreign key, stores copied id string to link tables
+    
+    //Relational mapping: Links the Profile table's userId to the User table's id
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+}

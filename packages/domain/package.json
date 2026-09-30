@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "zod": "^3.24.0",
-    "@project/db": "workspace:*"
+    "@project/db": "workspace:*",
+    "@project/redis": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^4.0.0"

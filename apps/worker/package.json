@@ -9,13 +9,17 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "sharp": "^0.34.0",
     "@project/db": "workspace:*",
+    "@project/log": "workspace:*",
     "@project/services": "workspace:*",
-    "@project/log": "workspace:*"
+    "axios": "^1.20.0",
+    "hls-parser": "^0.16.1",
+    "hls-ts": "^0.4.4",
+    "sharp": "^0.34.0",
+    "@project/redis": "workspace:*"
   },
   "devDependencies": {
-    "tsx": "^4.19.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0"
   }
 }

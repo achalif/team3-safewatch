@@ -6,11 +6,19 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".":            { "types": "./src/index.ts", "default": "./src/index.ts" },
-    "./migrate":    { "types": "./src/apply-migrations.ts", "default": "./src/apply-migrations.ts" }
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./migrate": {
+      "types": "./src/apply-migrations.ts",
+      "default": "./src/apply-migrations.ts"
+    }
   },
   "scripts": {
     "generate": "prisma generate",
+    "validate": "prisma validate",
+    "migrate": "prisma migrate dev",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf src/generated"
   },
