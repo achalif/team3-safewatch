@@ -149,6 +149,9 @@ importers:
       '@project/log':
         specifier: workspace:*
         version: link:../../packages/log
+      '@project/redis':
+        specifier: workspace:*
+        version: link:../../packages/redis
       '@project/services':
         specifier: workspace:*
         version: link:../../packages/services
@@ -196,9 +199,6 @@ importers:
       '@project/log':
         specifier: workspace:*
         version: link:../log
-      '@project/redis':
-        specifier: workspace:*
-        version: link:../redis
       pg:
         specifier: ^8.13.0
         version: 8.22.0
@@ -221,6 +221,9 @@ importers:
       '@project/db':
         specifier: workspace:*
         version: link:../db
+      '@project/redis':
+        specifier: workspace:*
+        version: link:../redis
       zod:
         specifier: ^3.24.0
         version: 3.25.76

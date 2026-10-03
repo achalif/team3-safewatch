@@ -1,8 +1,26 @@
-import { prisma, IncidentCategory, IncidentSeverity, IncidentStatus } from "../client";
-import { getIncidentIdsInRadius, getUserLocation, indexIncident } from "@project/redis";
+import { prisma, IncidentStatus, IncidentSeverity, IncidentCategory } from "@project/db";
+import { getIncidentIdsInRadius, getUserLocation } from "@project/redis";
+import { ListActiveIncidentsInput } from "../zod_schemas/incidents";
 
 // Alert radius used until profiles carry a per-user setting
 const DEFAULT_RADIUS_METERS = 5 * 1609.34;
+
+export const incidentSeverityOrder: Record<IncidentSeverity, number> = {
+  CRITICAL: 4,
+  HIGH: 3,
+  MEDIUM: 2,
+  LOW: 1,
+};
+
+export type IncidentListItem = {
+  id: string;
+  title: string;
+  status: IncidentStatus;
+  severity: IncidentSeverity;
+  category: IncidentCategory;
+  address: string | null;
+  createdAt: Date;
+};
 
 
 /**
@@ -10,23 +28,18 @@ const DEFAULT_RADIUS_METERS = 5 * 1609.34;
  * 
  * What this file does:
  * 
- * 1. getActiveIncidents()
+ * 1. getActiveIncidentPins()
  *      - Pulls every live incident currently parsed from the CAD feed.
  *      
- * 
  * 2. getNearbyIncidentsForUserProfile()
  *      - Queries Redis for incident IDs inside the user's radius, then 
  *      fetches full incident records from Prisma.
  * 
  * 3. getIncidentById()
  *      - Looks up one exact CAD incident by its ID.
- *      
- * 
- * 4. createIncident()
- *      - Persists new incident to PostgreSQL and indexes coordinates in Redis.
  */
 
-export async function getActiveIncidents() {
+export async function getActiveIncidentPins() {
     return prisma.incident.findMany({
         where : { status: { in: [IncidentStatus.ACTIVE,IncidentStatus.INVESTIGATING] } },
         select : {
@@ -82,21 +95,36 @@ export async function getIncidentById(id: string) {
     });
 }
 
-export async function createIncident(data : {
-    userId: string;
-    title: string;
-    category: IncidentCategory;
-    severity: IncidentSeverity;
-    longitude: number;
-    latitude: number;
-    address?: string;
-    description?: string;
-    externalId?: string;
-    source?: string;
-}) {
-    const incident = await prisma.incident.create({ data });
+export async function listActiveIncidents(
+  input: ListActiveIncidentsInput = {}
+): Promise<IncidentListItem[]> {
+  const limit = input.limit ?? 25;
 
-    await indexIncident(incident.id, incident.latitude, incident.longitude);
+  const incidents = await prisma.incident.findMany({
+    where: {
+      status: { in: [IncidentStatus.ACTIVE, IncidentStatus.INVESTIGATING] },
+    },
+    select: {
+      id: true,
+      title: true,
+      status: true,
+      severity: true,
+      category: true,
+      address: true,
+      createdAt: true,
+    },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
 
-    return incident;
+  return incidents
+    .sort((a, b) => {
+      const severityDelta =
+        incidentSeverityOrder[b.severity] - incidentSeverityOrder[a.severity];
+
+      if (severityDelta !== 0) return severityDelta;
+
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    })
+    .slice(0, limit);
 }

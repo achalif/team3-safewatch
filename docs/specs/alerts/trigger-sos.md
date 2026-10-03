@@ -10,7 +10,8 @@ message or choosing recipients under stress.
 
 ## Where it lives
 - `apps/web/app/api/v1/alerts/route.ts`
-- `packages/domain/src/index.ts` (`triggerSosAlertSchema`, `triggerSosAlert`)
+- `packages/domain/src/queries/alerts.ts` (`triggerSosAlert`)
+- `packages/domain/src/zod_schemas/alerts.ts` (`triggerSosAlertSchema`, `NoEmergencyContactsError`)
 - `packages/db/prisma/schema/alerts.prisma` (`Alert`, `AlertLog`)
 - `packages/db/prisma/schema/emergencyContact.prisma`
 

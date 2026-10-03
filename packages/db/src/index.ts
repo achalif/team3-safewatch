@@ -14,6 +14,3 @@ export {
   DeliveryChannel,
   DeliveryStatus,
 } from "./generated/prisma";
-
-export * from "./queries/incidents";
-export * from "./queries/user";
