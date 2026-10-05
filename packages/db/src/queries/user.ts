@@ -191,7 +191,7 @@ export async function addEmergencyContact(
             firstName: data.firstName,
             lastName: data.lastName,
             phoneNumber: data.phoneNumber,
-            email?: data.email,
+            email: data.email,
             relationship: data.relationship,
             user : {
                 connect : { id : userId },

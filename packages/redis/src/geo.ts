@@ -14,7 +14,7 @@
  * 
  */
 
-import {redis} from "./client.js";
+import {redis} from "./client";
 
 // Redis key for tracking all live active user locations
 const LOCATION_KEY = "safewatch:active_locations";
