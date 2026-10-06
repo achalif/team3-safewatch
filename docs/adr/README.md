@@ -19,4 +19,5 @@ that supersedes the old one.
 | 0009 | [Validation + queries live in a web-only domain package](0009-domain-web-only.md) | Accepted |
 | 0010 | [Reviewer-agent lifecycle and authority](0010-reviewer-agent-lifecycle.md) | Accepted |
 | 0011 | [Ideation pipeline + @research subagent](0011-ideation-pipeline.md) | Accepted |
+| 0012 | [Upstash Redis as a cloud dependency with no local stand-in](0012-upstash-redis-cloud-dependency.md) | Proposed |
 EOF
