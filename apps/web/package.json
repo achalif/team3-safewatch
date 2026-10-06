@@ -11,25 +11,28 @@
     "clean": "rm -rf .next"
   },
   "dependencies": {
-    "next": "15.5.21",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "@electric-sql/pglite": "^0.5.4",
+    "@hookform/resolvers": "^5.9.1",
+    "@prisma/adapter-pg": "6.19.3",
     "@prisma/client": "6.19.3",
+    "@project/auth": "workspace:*",
     "@project/db": "workspace:*",
+    "@project/domain": "workspace:*",
+    "@project/log": "workspace:*",
     "@project/redis": "workspace:*",
     "@project/services": "workspace:*",
-    "@project/domain": "workspace:*",
-    "@project/auth": "workspace:*",
-    "@project/log": "workspace:*",
-    "@electric-sql/pglite": "^0.5.4",
-    "pglite-prisma-adapter": "0.6.1",
+    "next": "15.5.21",
     "pg": "^8.13.0",
-    "@prisma/adapter-pg": "6.19.3"
+    "pglite-prisma-adapter": "0.6.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.89.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
-    "tailwindcss": "^4.0.0",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0"
+    "@types/react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0"
   }
 }
