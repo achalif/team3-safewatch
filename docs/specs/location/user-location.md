@@ -3,12 +3,6 @@ type: feature
 ---
 # A user can share their location from the device or by entering coordinates
 
-<!--
-DRAFT FOR REVIEW. Delete this comment before merge.
-Before merge: re-check the UI states diagram after riding every arrow, and
-update it to match the built component.
--->
-
 > **Interim behavior — no user check.** Until user accounts are in place, the
 > route saves a location for whatever user id the identity seam returns,
 > without checking that a matching user exists. When accounts land, an
@@ -24,8 +18,8 @@ any of those situations can still type in their coordinates and use the app.
 ## Where it lives
 - `apps/web/app/api/v1/location/route.ts` (`PUT`)
 - `apps/web/app/_components/location-picker.tsx` (client component)
-- `apps/web/app/_components/use-device-location.ts` (browser Geolocation
-  wrapper, reused by the SOS button and the map)
+- `apps/web/app/_components/device-location.ts` (`getDeviceLocation`, the
+  browser Geolocation wrapper reused by the SOS button and the map)
 - `packages/domain/src/zod_schemas/location.ts` (`updateLocationSchema`)
 - `packages/domain/src/queries/location.ts` (`saveUserLocation`)
 - `packages/redis/src/geo.ts` (`updateUserLocation`)
@@ -36,6 +30,11 @@ any of those situations can still type in their coordinates and use the app.
 - The device request uses a 10-second timeout. Permission denied, timeout,
   position unavailable, and an unsupported browser all show the manual form,
   with one line saying why.
+- While the device lookup is running, "Enter coordinates instead" switches
+  to the manual form. The timeout only starts once the user answers the
+  browser's permission prompt, so without this a user who ignores the prompt
+  would wait forever. A lookup that finishes after the user switched is
+  ignored.
 - The manual form has two fields, latitude and longitude. It is a native
   `<form>`: every control is reachable and usable by keyboard, Enter submits,
   and each field has a visible label.
@@ -75,6 +74,7 @@ stateDiagram-v2
   idle --> manual: click "Enter coordinates"
   locating --> saving: position received
   locating --> manual: denied / timeout / unavailable / unsupported
+  locating --> manual: click "Enter coordinates instead"
   manual --> manual: invalid input (client check, message shown)
   manual --> saving: submit valid input
   saving --> saved: 200

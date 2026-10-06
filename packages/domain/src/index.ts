@@ -19,3 +19,5 @@ export * from "./zod_schemas/contacts";
 
 export * from "./queries/alerts";
 export * from "./zod_schemas/alerts";
+export * from "./queries/location";
+export * from "./zod_schemas/location";
