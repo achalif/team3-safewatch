@@ -87,8 +87,8 @@ stateDiagram-v2
 ```
 
 The component holds a single `status` value rather than separate booleans, so
-"saving" and "error" cannot be true at once. The submit button's `disabled`
-is derived from `status`, not stored.
+"saving" and "error" cannot be true at once. Which buttons show, and whether
+they are disabled, is derived from `status`, not stored.
 
 ## Examples
 
