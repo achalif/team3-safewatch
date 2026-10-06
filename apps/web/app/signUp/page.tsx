@@ -13,13 +13,10 @@ const signupSchema = z.object({
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
-interface SignupPageProps {
-  initialName?: string;
-}
-
-export default function SignupPage({ initialName = '' }: SignupPageProps) {
-  const router = useRouter();
+export default function SignUpPage() {
   const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter();
+  const initialName = '';
 
   const {
     register,
