@@ -23,6 +23,7 @@ production behavior diverge, controlled by configuration, not code branches.
 | Blob storage | Azurite | Azure Blob Storage | `AZURE_STORAGE_CONNECTION_STRING` |
 | Queue | Azurite | Azure Storage Queue | `AZURE_STORAGE_CONNECTION_STRING` |
 | Identity | Dev stub (`x-user-id` header, env fallback) | Real auth (OAuth, JWTs) | `ALLOW_DEV_IDENTITY` guard + package replacement |
+| Redis (geo index) | **None** — exception, see ADR-0012; tests use an in-memory fake | Upstash Redis | `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` |
 
 ## Design intent
 
@@ -45,6 +46,8 @@ production behavior diverge, controlled by configuration, not code branches.
 - [ADR-0008](../adr/0008-azurite-seam.md) — Azurite as the blob/queue seam.
 - [ADR-0003](../adr/0003-dev-identity-stub.md) — the identity stub as the auth
   seam.
+- [ADR-0012](../adr/0012-upstash-redis-cloud-dependency.md) — Upstash Redis,
+  the one cloud dependency with no local stand-in.
 
 ## Adding a new seam
 

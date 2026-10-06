@@ -1,5 +1,6 @@
 import { currentUserId } from "@project/auth";
 import { listActiveIncidents } from "@project/domain";
+import { LocationPicker } from "./_components/location-picker";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,8 @@ export default async function Home() {
           Signed in as <code className="rounded bg-neutral-100 px-1">{userId}</code>
         </p>
       </header>
+
+      <LocationPicker />
 
       <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-6">
         <div className="mb-4 flex items-center justify-between">
